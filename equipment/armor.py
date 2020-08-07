@@ -6,27 +6,27 @@ from flask_restful import Resource
 from flask_restful import reqparse
 from urllib.parse import unquote
 
-collection = db.armor
+_armorCollection = db.armor
 
 
 class ArmorListApi(Resource):
     def get(self):
-        return jsonify(getFilteredQuery(collection, {}))
+        return jsonify(getFilteredQuery(_armorCollection, {}))
 
 
 class ArmorHelmetApi(Resource):
     def get(self):
-        return jsonify(getFilteredQuery(collection, {"head": True}))
+        return jsonify(getFilteredQuery(_armorCollection, {"head": True}))
 
 
 class ArmorJacketApi(Resource):
     def get(self):
-        return jsonify(getFilteredQuery(collection, {"torso": True}))
+        return jsonify(getFilteredQuery(_armorCollection, {"torso": True}))
 
 
 class ArmorPantsApi(Resource):
     def get(self):
-        return jsonify(getFilteredQuery(collection, {"legs": True}))
+        return jsonify(getFilteredQuery(_armorCollection, {"legs": True}))
 
 
 class ArmorByFilterApi(Resource):
@@ -42,4 +42,4 @@ class ArmorByFilterApi(Resource):
         parser.add_argument("random_count", type=int, default=None)
         args = parser.parse_args()
 
-        return jsonify(getFilteredQuery(collection, args))
+        return jsonify(getFilteredQuery(_armorCollection, args))

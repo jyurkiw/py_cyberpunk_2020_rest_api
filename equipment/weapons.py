@@ -6,37 +6,41 @@ from flask_restful import Resource
 from flask_restful import reqparse
 from urllib.parse import unquote
 
-collection = db.weapons
+_weaponsCollection = db.weapons
 
 
 class WeaponsListApi(Resource):
     def get(self):
-        return jsonify(getFilteredQuery(collection, {}))
+        return jsonify(getFilteredQuery(_weaponsCollection, {}))
 
 
 class WeaponCategoriesListApi(Resource):
     def get(self):
-        return jsonify(collection.distinct("category"))
+        return jsonify(_weaponsCollection.distinct("category"))
 
 
 class WeaponsByAvailabilityApi(Resource):
     def get(self, availability):
         return jsonify(
-            getFilteredQuery(collection, {"availability": availability})
+            getFilteredQuery(_weaponsCollection, {"availability": availability})
         )
 
 
 class WeaponsByCategoryApi(Resource):
     def get(self, category):
         return jsonify(
-            getFilteredQuery(collection, {"category": unquote(category)})
+            getFilteredQuery(
+                _weaponsCollection, {"category": unquote(category)}
+            )
         )
 
 
 class WeaponsByConcealabilityApi(Resource):
     def get(self, concealability):
         return jsonify(
-            getFilteredQuery(collection, {"concealability": concealability})
+            getFilteredQuery(
+                _weaponsCollection, {"concealability": concealability}
+            )
         )
 
 
@@ -52,4 +56,4 @@ class WeaponsByFilterApi(Resource):
         parser.add_argument("random_count", type=int, default=None)
         args = parser.parse_args()
 
-        return jsonify(getFilteredQuery(collection, args))
+        return jsonify(getFilteredQuery(_weaponsCollection, args))

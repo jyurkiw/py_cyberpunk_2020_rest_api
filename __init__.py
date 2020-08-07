@@ -8,6 +8,7 @@ from stats import *
 from skills import *
 from lifepath import *
 from cybernetics import *
+from characters import *
 
 app = Flask(__name__)
 api = Api(app)
@@ -49,6 +50,13 @@ api.add_resource(
     CareerRandomSkillsByRoleApi,
     "/skills/random/career/<string:role_name>/points/<int:points>/",
 )
+api.add_resource(
+    CareerRandomSkillsAndRoleApi, "/skills/random/career/points/<int:points>/",
+)
+api.add_resource(
+    SkillsAndRoleRandomCompleteApi,
+    "/skills/role/random/complete/points/<int:career_skill_points>/<int:pickup_skill_points>/",
+)
 api.add_resource(PickupRandomSkillsApi, "/pickupskills/random/add/")
 
 # Lifepath
@@ -56,6 +64,13 @@ api.add_resource(LifepathRandomOriginsApi, "/lifepath/random/origins/")
 api.add_resource(LifepathRandomFamilyApi, "/lifepath/random/family/")
 api.add_resource(LifepathRandomMotivationsApi, "/lifepath/random/motivations/")
 api.add_resource(LifepathRandomLifeEventsApi, "/lifepath/random/life_events/")
+api.add_resource(LifepathRandomCompleteApi, "/lifepath/random/complete/")
+api.add_resource(
+    LifepathRandomStyleAndMotivationsApi, "/lifepath/random/style/motivations/"
+)
+api.add_resource(
+    LifepathRandomFamilyAndEventsApi, "/lifepath/random/family/events/"
+)
 
 # Cybernetics
 api.add_resource(
@@ -71,6 +86,9 @@ api.add_resource(
 api.add_resource(
     CyberneticsGetRandomApi, "/cyber/random/",
 )
+
+# Characters
+api.add_resource(CharactersRandomSingleApi, "/characters/random/single/")
 
 if __name__ == "__main__":
     app.run(debug=True)

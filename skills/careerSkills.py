@@ -1,53 +1,39 @@
-from random import sample
-from util import db
-from util import getFilteredQuery
-
-from util import distributePoints, getDefaultValueList
+from .skills_util import getCareerSkillsForRole
+from .skills_util import getRoleNames
+from .skills_util import getRandomSkillsByRole
+from .skills_util import getRandomSkillsAndRole
+from .skills_util import getRandomSkillsAndRoleWithPickups
 
 from flask import jsonify
 from flask_restful import Resource
 from flask_restful import reqparse
 from urllib.parse import unquote
 
-collection = db.career_skills
-
 
 class CareersListApi(Resource):
     def get(self):
-        return jsonify(collection.distinct("role_name"))
+        return jsonify(getRoleNames())
 
 
 class CareerSkillsForRoleApi(Resource):
     def get(self, role_name):
-        return jsonify(
-            getFilteredQuery(
-                collection, {"role_name": role_name}, {"role_name": 0}
-            )
-        )
+        return jsonify(getCareerSkillsForRole(role_name))
 
 
 class CareerRandomSkillsByRoleApi(Resource):
-    def get(self, role_name, points):
-        skills = getFilteredQuery(
-            collection, {"role_name": role_name}, {"role_name": 0}
-        )
+    def get(self, role_name, points=40):
+        return jsonify(getRandomSkillsByRole(role_name, points))
 
-        # Handle "choose any N from M" skill scenarios
-        skills = [
-            skill for skill in skills if isinstance(skill["skill"], str)
-        ] + [
-            {"skill": skill, "stat": skillSelectGroup["stat"]}
-            for skillSelectGroup in skills
-            if isinstance(skillSelectGroup["skill"], list)
-            for skill in sample(
-                skillSelectGroup["skill"], skillSelectGroup["select"]
+
+class CareerRandomSkillsAndRoleApi(Resource):
+    def get(self, points=40):
+        return jsonify(getRandomSkillsAndRole(points))
+
+
+class SkillsAndRoleRandomCompleteApi(Resource):
+    def get(self, career_skill_points, pickup_skill_points):
+        return jsonify(
+            getRandomSkillsAndRoleWithPickups(
+                career_skill_points, pickup_skill_points
             )
-        ]
-
-        skillValues = getDefaultValueList(skills, 1)
-        distributePoints(skillValues, total=points)
-
-        for i in range(0, len(skills)):
-            skills[i]["score"] = skillValues[i]
-
-        return jsonify(skills)
+        )

@@ -1,10 +1,6 @@
-from util import (
-    distributePoints,
-    mergeIndiciesToValuesByMap,
-    getDefaultValueList,
-    convertDictToValueNameList,
-    convertValueNameListToDict,
-)
+from util import distributePoints
+from util import mergeIndiciesToValuesByMap
+from util import getDefaultValueList
 
 from math import floor
 
@@ -55,10 +51,10 @@ def getDefaultStatBlock(totalStatPoints):
     statBlock = mergeIndiciesToValuesByMap(baseStats, _valueIndexMap)
     statBlock.update(calculateStats(statBlock))
 
-    return convertDictToValueNameList(statBlock)
+    return statBlock
 
 
-def finalizeStatBlock(statList):
+def finalizeStatBlock(statBlock):
     """Returns a statBlock with post-creation calculated stats added.
     Post-creation stats are things like current reflex, current empathy,
     and humanity after humanity_loss for cybernetics.
@@ -66,6 +62,5 @@ def finalizeStatBlock(statList):
     Params:
         statList list A list of stat nameValue dicts.
     """
-    statBlock = convertValueNameListToDict(statList)
     statBlock.update(calculateStats(statBlock, _recalculatedIndexMap))
-    return convertDictToValueNameList(statBlock)
+    return statBlock

@@ -9,6 +9,12 @@ if os.path.exists(".dbConstants"):
 
 
 def getFilteredQuery(collection, filter, projection={}):
+    """Returns the results of the passed query.
+    Allows the {"random_count": int} filter which is just a sentinel value
+    for {$sample: {size: int}} in the aggregate pipeline.
+
+    [projection] will never allow for the inclusion of _id.
+    """
     projection.update({"_id": 0})
     filter = {k: filter[k] for k in filter if filter[k]}
     randomCount = filter.get("random_count", None)
@@ -45,6 +51,18 @@ def incrementAtIndex(valueList, index, max):
     originalValue = valueList[index]
     valueList[index] += 1 if valueList[index] < max else 0
     return valueList[index] != originalValue
+
+
+def convertDictToValueNameList(valueDict):
+    """Returns a list of name/value dictionaries. Not recursive. Scrubs empties."""
+    return [
+        {"name": k, "value": valueDict[k]} for k in valueDict if valueDict[k]
+    ]
+
+
+def convertValueNameListToDict(valueList):
+    """Returns a dictionary formed from a list of name/value pairs. Not recursive."""
+    return {k["name"]: k["value"] for k in valueList}
 
 
 def distributePoints(valueList, **args):
